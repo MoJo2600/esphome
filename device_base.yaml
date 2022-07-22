@@ -1,0 +1,12 @@
+# Enable logging
+logger:
+  level: ${log_level}
+
+sensor:
+  - <<: !include common/sensor/uptime.config.yaml
+  - <<: !include common/sensor/wifi_signal.config.yaml
+binary_sensor:
+  - <<: !include common/binary_sensor/connection_status.config.yaml
+
+switch:
+  - <<: !include common/switch/restart_switch.config.yaml

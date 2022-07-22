@@ -1,0 +1,39 @@
+esphome:
+  name: anbau-temperatur
+
+esp8266:
+  board: thing
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  password: ""
+
+ota:
+  password: ""
+
+packages:
+  wifi: !include common\wifi.yaml
+  device_base: !include common\device_base.yaml
+
+captive_portal:
+
+sensor:
+  - platform: dht
+    model: AM2302
+    pin: 4
+    temperature:
+      name: "Anbau Temperatur"
+    humidity:
+      name: "Anbau Luftfeuchte"
+    update_interval: 60s
+  - platform: dht
+    model: AM2302
+    pin: 0
+    temperature:
+      name: "Fronius Batterie Temperatur"
+    humidity:
+      name: "Fronius Batterie Luftfeuchte"
+    update_interval: 60s

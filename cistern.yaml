@@ -1,0 +1,33 @@
+esphome:
+  name: cistern
+
+esp8266:
+  board: thing
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  password: ""
+
+ota:
+  password: ""
+
+i2c:
+  sda: 2
+  scl: 14
+  scan: True
+
+packages:
+  wifi: !include wifi.yaml
+  device_base: !include device_base.yaml
+
+captive_portal:
+    
+sensor:
+  - platform: vl53l0x
+    name: "Distance"
+    address: 0x29
+    update_interval: 60s
+    long_range: true
