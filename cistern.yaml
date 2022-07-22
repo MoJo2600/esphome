@@ -1,5 +1,11 @@
+substitutions:
+  project: Cistern
+  id: cistern
+  hostname: cistern
+  log_level: INFO
+
 esphome:
-  name: cistern
+  name: $hostname
 
 esp8266:
   board: thing
@@ -20,8 +26,8 @@ i2c:
   scan: True
 
 packages:
-  wifi: !include wifi.yaml
-  device_base: !include device_base.yaml
+  wifi: !include common/wifi.yaml
+  device_base: !include common/device_base.yaml
 
 captive_portal:
     

@@ -1,0 +1,7 @@
+---
+platform: uptime
+name: $project Uptime
+unit_of_measurement: h
+entity_category: diagnostic
+filters:
+  - lambda: return int((x + 1800.0) / 3600.0);
