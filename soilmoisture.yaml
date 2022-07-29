@@ -3,22 +3,11 @@ substitutions:
   id: soilmoisture1
   hostname: soilmoisture1
   log_level: DEBUG
-#  sensor_dry_reading_3v: 958                           # sensor reading with dry sensor @3.0V VCC
-#  sensor_wet_reading_3v: 727                           # sensor reading with wet sensor @3.0V VCC
-#  vcc_reading_3v: 958                                  # analog VCC reading @3.0V VCC
 
 esphome:
-  # includes:
-  #   - soilmoisture.h
-  libraries:
-    - Wire
+  # libraries:
+  #   - Wire
   name: $hostname
-  on_boot:
-    then:
-      - output.set_level:                               # Set output PWM frequency for soil sensor
-          id: pwm_output
-          level: 8%
-      # - output.turn_on: sensor_switch                   # Set internal switch to soil sensor
 
 esp8266:
   board: esp12e
@@ -41,7 +30,6 @@ status_led:
 i2c:
   sda: 4
   scl: 5
-  scan: True
 
 packages:
   wifi: !include common/wifi.yaml
@@ -53,16 +41,6 @@ external_components:
   - source:
       type: local
       path: custom_components
-
-# Clock Output for soil moisture sensor
-output:
-  - platform: esp8266_pwm
-    pin: GPIO14
-    frequency: 60000 Hz
-    id: pwm_output
-  # - platform: gpio
-  #   pin: GPIO15
-  #   id: sensor_switch
 
 number:
   - platform: template
@@ -77,67 +55,35 @@ number:
     on_value: 
       then:
         - lambda: 'id(soilsensor).set_adc_dry_at_3v(x);'
-#   - platform: template
-#     id: sensor_wet_adc
-#     min_value: 0
-#     max_value: 1024
-#     initial_value: 123
-#     step: 1
-#     name: ADC Wet
-#     entity_category: config
-#     optimistic: true
+  - platform: template
+    id: sensor_wet_adc
+    min_value: 0
+    max_value: 1024
+    initial_value: 123
+    step: 1
+    name: ADC Wet
+    entity_category: config
+    optimistic: true
+    on_value: 
+      then:
+        - lambda: 'id(soilsensor).set_adc_wet_at_3v(x);'
 
 sensor:
-  - platform: soil_moisture_sensor
+  - platform: tmp112
+    id: temperature
+    name: Temperature
+    update_interval: 5min
+  - platform: ap_soil_moisture_sensor
     id: soilsensor
-    update_interval: 10sec
-    temperature:
-      name: "Soil Temperature"
     battery_level:
       name: "Battery"
     battery_level_raw:
       name: "Battery RAW"
-
-# Soil moisture sensor
-# sensor:
-#   - platform: custom
-#     id: soilsensor
-#     lambda: |-
-#       auto custom_soilsensor = new SoilMoistureSensor();
-#       App.register_component(custom_soilsensor);
-#       return {
-#         custom_soilsensor->battery_sensor,
-#         custom_soilsensor->battery_sensor_adc,
-#         custom_soilsensor->moisture_sensor,
-#         custom_soilsensor->moisture_sensor_adc,
-#         custom_soilsensor->temperature_sensor
-#       };
-    
-#     sensors:
-#     - name: "Battery Level"
-#       icon: "mdi:battery"
-#       unit_of_measurement: "%"
-#       accuracy_decimals: 0
-      
-#     - name: "Battery Reading ADC"
-#       icon: "mdi:battery"
-#       unit_of_measurement: raw
-#       accuracy_decimals: 0
-
-#     - name: "Soil Moisture Level"
-#       icon: "mdi:flower-outline"
-#       unit_of_measurement: "%"
-#       accuracy_decimals: 0
-
-#     - name: "Soil Moisture Reading ADC"
-#       icon: "mdi:flower-outline"
-#       unit_of_measurement: raw
-#       accuracy_decimals: 0
-
-#     - name: "Temperature"
-#       icon: "mdi:thermometer"
-#       unit_of_measurement: °C
-#       accuracy_decimals: 1
+    moisture:
+      name: "Moisture"
+    moisture_raw:
+      name: "Moisture RAW"
+    update_interval: 60min
 
 binary_sensor:
   - platform: gpio
