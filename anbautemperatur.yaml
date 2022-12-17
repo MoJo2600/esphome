@@ -1,5 +1,11 @@
+substitutions:
+  project: AnbauTemperatur
+  id: anbau-temperatur
+  hostname: anbau-temperatur
+  log_level: INFO
+
 esphome:
-  name: anbau-temperatur
+  name: $hostname
 
 esp8266:
   board: thing
@@ -15,8 +21,8 @@ ota:
   password: ""
 
 packages:
-  wifi: !include common\wifi.yaml
-  device_base: !include common\device_base.yaml
+  wifi: !include common/wifi.yaml
+  device_base: !include common/device_base.yaml
 
 captive_portal:
 
@@ -28,7 +34,7 @@ sensor:
       name: "Anbau Temperatur"
     humidity:
       name: "Anbau Luftfeuchte"
-    update_interval: 60s
+    update_interval: 500s
   - platform: dht
     model: AM2302
     pin: 0
@@ -36,4 +42,4 @@ sensor:
       name: "Fronius Batterie Temperatur"
     humidity:
       name: "Fronius Batterie Luftfeuchte"
-    update_interval: 60s
+    update_interval: 500s

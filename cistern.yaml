@@ -15,7 +15,7 @@ logger:
 
 # Enable Home Assistant API
 api:
-  password: ""
+#  password: ""
 
 ota:
   password: ""
@@ -23,17 +23,33 @@ ota:
 i2c:
   sda: 2
   scl: 14
-  scan: True
+##  scan: True
 
 packages:
   wifi: !include common/wifi.yaml
   device_base: !include common/device_base.yaml
 
 captive_portal:
-    
+
 sensor:
+  - platform: template
+    icon: "mdi:water-percent"
+    unit_of_measurement: "%"
+    accuracy_decimals: 0
+    state_class: "measurement"
+    name: "level"
+    id: template_level
+
   - platform: vl53l0x
     name: "Distance"
     address: 0x29
-    update_interval: 60s
+    update_interval: 10s
     long_range: true
+    filters:
+    - sliding_window_moving_average:
+        window_size: 6
+        send_every: 6
+    on_value:
+    - sensor.template.publish:
+        id: template_level
+        state: !lambda 'return (1.0-x)*100.0;'
